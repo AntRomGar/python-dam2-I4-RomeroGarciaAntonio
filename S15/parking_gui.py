@@ -80,7 +80,7 @@ class ParkingApp(tb.Window):
     def __init__(self, parking):
         super().__init__(themename="flatly")
         self.title("Dashboard - Gestión Parking")
-        self.geometry("750x650")
+        self.geometry("750x900")
         self.parking = parking
         self.tickets_activos = {}
 
@@ -111,9 +111,15 @@ class ParkingApp(tb.Window):
         cols = (len(self.parking.plazas) + 1)//2
         for i, plaza in enumerate(self.parking.plazas):
             btn = tb.Button(plazas_frame, text=f"P{plaza.numero}\n{plaza.tipo.capitalize()}",
-                            width=12, height=5, state="disabled", bootstyle="secondary")
-            btn.grid(row=i // cols, column=i % cols, padx=8, pady=8)
+                            state="disabled", bootstyle="secondary")
+            btn.grid(row=i // cols, column=i % cols, padx=8, pady=8, sticky="nsew")
             self.plaza_buttons.append((btn, plaza))
+
+        # Configurar pesos para que los botones se expandan
+        for r in range(filas):
+            plazas_frame.rowconfigure(r, weight=1)
+        for c in range(cols):
+            plazas_frame.columnconfigure(c, weight=1)
 
         # Panel Entrada
         entrada_frame = tb.Labelframe(self, text="Registrar Entrada", padding=15)
@@ -146,7 +152,7 @@ class ParkingApp(tb.Window):
         recibo_frame = tb.Labelframe(self, text="Ticket / Recibo", padding=10)
         recibo_frame.pack(fill="both", expand=True, padx=15, pady=10)
 
-        self.text_recibo = tb.Text(recibo_frame, height=9, font=("Courier New", 11), state="disabled", bootstyle="dark")
+        self.text_recibo = tb.Text(recibo_frame, height=9, font=("Courier New", 11), state="disabled",)
         self.text_recibo.pack(fill="both", expand=True)
 
     def actualizar_dashboard(self):
@@ -160,7 +166,6 @@ class ParkingApp(tb.Window):
         self.lbl_ocupadas.config(text=f"Plazas Ocupadas: {ocupadas}")
         self.lbl_reservadas.config(text=f"Plazas Reservadas: {reservadas}")
 
-        # Colores bootstrap para botones según estado
         color_map = {
             "libre": "success",
             "ocupada": "danger",
